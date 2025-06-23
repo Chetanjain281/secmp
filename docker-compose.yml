@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: marketplace-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: marketplace
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - marketplace-network
+
+  # Kafka and Zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: marketplace-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - marketplace-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: marketplace-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    networks:
+      - marketplace-network
+
+  # Hardhat Node for blockchain
+  hardhat-node:
+    build:
+      context: ./contracts
+      dockerfile: Dockerfile
+    container_name: marketplace-hardhat
+    ports:
+      - "8545:8545"
+    command: npx hardhat node --hostname 0.0.0.0
+    networks:
+      - marketplace-network
+
+  # Kafka Visualization Dashboard
+  kafka-viz:
+    build:
+      context: ./kafka-viz
+      dockerfile: Dockerfile
+    container_name: marketplace-kafka-viz
+    ports:
+      - "3001:3001"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKERS: kafka:9092
+    networks:
+      - marketplace-network
+
+  # Backend Services (will be added as we build them)
+  # auth-service:
+  #   build:
+  #     context: ./backend/auth-service
+  #   ports:
+  #     - "3010:3010"
+  #   depends_on:
+  #     - mongodb
+  #     - kafka
+  #   networks:
+  #     - marketplace-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  marketplace-network:
+    driver: bridge

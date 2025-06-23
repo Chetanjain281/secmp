@@ -1,0 +1,42 @@
+{
+  "name": "blockchain-tokenized-funds-marketplace",
+  "version": "1.0.0",
+  "description": "Blockchain Secondary Marketplace for Tokenized Funds - Complete POC System",
+  "main": "index.js",  "scripts": {
+    "install:all": "npm run install:contracts; npm run install:services; npm run install:viz",
+    "install:contracts": "cd contracts; npm install",
+    "install:services": "npm run install:auth; npm run install:user; npm run install:fund; npm run install:custody; npm run install:trading; npm run install:settlement; npm run install:blockchain; npm run install:notification; npm run install:oracles",
+    "install:auth": "cd backend/auth-service; npm install",
+    "install:user": "cd backend/user-service; npm install",
+    "install:fund": "cd backend/fund-service; npm install",
+    "install:custody": "cd backend/custody-service; npm install",
+    "install:trading": "cd backend/trading-service; npm install",
+    "install:settlement": "cd backend/settlement-service; npm install",
+    "install:blockchain": "cd backend/blockchain-service; npm install",
+    "install:notification": "cd backend/notification-service; npm install",
+    "install:oracles": "cd backend/oracles/nav-oracle; npm install; cd ../forex-oracle; npm install; cd ../custody-oracle; npm install; cd ../market-oracle; npm install",
+    "install:viz": "cd kafka-viz; npm install",
+    "dev": "docker-compose up -d",
+    "dev:stop": "docker-compose down",
+    "dev:clean": "docker-compose down -v",
+    "test:contracts": "cd contracts; npm test",
+    "test:all": "npm run test:contracts",
+    "deploy:contracts": "cd contracts; npm run deploy:local",
+    "hardhat:node": "cd contracts; npm run node",
+    "logs": "docker-compose logs -f"
+  },
+  "keywords": [
+    "blockchain",
+    "tokenized-funds",
+    "marketplace",
+    "DeFi",
+    "HNI",
+    "secondary-market",
+    "POC"
+  ],
+  "author": "Marketplace Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,189 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Hardhat files
+contracts/cache/
+contracts/artifacts/
+contracts/node_modules/
+contracts/.env
+contracts/coverage/
+contracts/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+contracts/ignition/deployments/chain-31337/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# MongoDB
+data/
+
+# Kafka data
+kafka-logs/
+zookeeper-data/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Deployment files (sensitive)
+deployments/*.json
+scripts/deployed-addresses.json
+
+# Test artifacts
+test-results/
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Python (if any Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Java (if any Java components)
+*.class
+*.jar
+*.war
+*.ear
+
+# React build
+frontend-react/build/
+frontend-react/dist/
+
+# Static assets (large files)
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Local development files
+local-config.json
+dev-settings.json
+
+# CI/CD
+.github/workflows/secrets.yml
+
+# Blockchain specific
+.openzeppelin/
+.chainlink/
+brownie-config.yaml
+
+# Local blockchain data
+blockchain-data/
+
+# Certificate files
+*.pem
+*.crt
+*.key
+*.p12
+
+# AWS
+.aws/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes
+*.kubeconfig
+
+# Miscellaneous
+.vscode-test
+.nyc_output
+.sass-cache/
+connect.lock
+typings/
+.angular/
