@@ -32,13 +32,14 @@ contract FundToken is ERC20, Ownable, Pausable, ReentrancyGuard {
         string[] allowedRiskTolerance; // ["conservative", "moderate", "aggressive"]
         string[] allowedGeography; // ["IN", "US", "SG", etc.]
         bool isActive;
-    }
-
-    FundInfo public fundInfo;
+    }    FundInfo public fundInfo;
     SuitabilityCriteria public suitabilityCriteria;
     
     // Marketplace contract address - only it can facilitate transfers
     address public marketplaceContract;
+    
+    // Track approved investors for simplified suitability checking
+    mapping(address => bool) public suitableInvestors;
     
     // NAV history for tracking
     struct NAVHistory {
@@ -46,14 +47,15 @@ contract FundToken is ERC20, Ownable, Pausable, ReentrancyGuard {
         uint256 timestamp;
         string source; // "oracle", "manual", "initial"
     }
-    NAVHistory[] public navHistory;
-
-    // Events
+    NAVHistory[] public navHistory;    // Events
     event NAVUpdated(uint256 indexed newNAV, uint256 indexed oldNAV, string source, uint256 timestamp);
     event FundInfoUpdated(string field, string oldValue, string newValue);
     event SuitabilityUpdated(string criteria, string newValue);
     event MarketplaceSet(address indexed oldMarketplace, address indexed newMarketplace);
     event FundStatusChanged(bool isActive);
+    event InvestorSuitabilityUpdated(address indexed investor, bool suitable);
+    event TokensMinted(address indexed to, uint256 amount, uint256 nav);
+    event TokensBurned(address indexed from, uint256 amount, uint256 nav);
 
     // Modifiers
     modifier onlyManager() {
@@ -257,9 +259,23 @@ contract FundToken is ERC20, Ownable, Pausable, ReentrancyGuard {
         }
         
         return result;
+    }    /**
+     * @dev Update investor suitability status (for simplified marketplace integration)
+     */
+    function updateInvestorSuitability(address investor, bool suitable) external onlyManagerOrOwner {
+        suitableInvestors[investor] = suitable;
+        emit InvestorSuitabilityUpdated(investor, suitable);
     }
 
     /**
+     * @dev Check if investor is suitable (simplified check for marketplace)
+     */
+    function isSuitableInvestor(address investor) external view returns (bool) {
+        if (!suitabilityCriteria.isActive) {
+            return true; // No restrictions if criteria is disabled
+        }
+        return suitableInvestors[investor];
+    }    /**
      * @dev Check if investor meets suitability criteria
      * @param investorIncomeLevel Investor's income level
      * @param investorExperience Investor's experience level
@@ -366,6 +382,40 @@ contract FundToken is ERC20, Ownable, Pausable, ReentrancyGuard {
         }
         
         return false;
+    }    /**
+     * @dev Get fund info
+     */
+    function getFundInfo() external view returns (FundInfo memory) {
+        return fundInfo;
+    }
+
+    /**
+     * @dev Check if fund is active
+     */
+    function isActive() external view returns (bool) {
+        return fundInfo.isActive;
+    }
+
+    /**
+     * @dev Set active status (for testing/admin purposes)
+     */
+    function setActiveStatus(bool _isActive) external onlyManagerOrOwner {
+        fundInfo.isActive = _isActive;
+        emit FundStatusChanged(_isActive);
+    }
+
+    /**
+     * @dev Get minimum investment amount
+     */
+    function minimumInvestment() external view returns (uint256) {
+        return fundInfo.minimumInvestment;
+    }
+    
+    /**
+     * @dev Get fund manager address
+     */
+    function manager() external view returns (address) {
+        return fundInfo.manager;
     }
 
     /**

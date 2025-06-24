@@ -6,8 +6,9 @@ module.exports = {  solidity: {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
+        runs: 1, // Minimize contract size for deployment
       },
+      viaIR: true, // Enable intermediate representation for complex contracts
     },
   },
   networks: {
