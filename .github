@@ -1,6 +1,0 @@
-> **Note:**  
-> Always remember not to use `&&` for any terminal command since we are on Windows PowerShell.
-
----
-
-Did you check `PROMPTSANDLOGS.md`? What was the last thing changed?

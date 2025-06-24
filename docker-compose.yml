@@ -1,15 +1,13 @@
 version: '3.8'
 
-services:
-  # MongoDB Database
+services:  # MongoDB Database
   mongodb:
     image: mongo:6.0
     container_name: marketplace-mongodb
+    restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
       MONGO_INITDB_DATABASE: marketplace
     volumes:
       - mongodb_data:/data/db
@@ -67,19 +65,36 @@ services:
     environment:
       KAFKA_BROKERS: kafka:9092
     networks:
+      - marketplace-network  # Backend Services
+  auth-service:
+    build:
+      context: ./backend/auth-service
+    container_name: marketplace-auth-service
+    ports:
+      - "3010:3010"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
       - marketplace-network
-
-  # Backend Services (will be added as we build them)
-  # auth-service:
-  #   build:
-  #     context: ./backend/auth-service
-  #   ports:
-  #     - "3010:3010"
-  #   depends_on:
-  #     - mongodb
-  #     - kafka
-  #   networks:
-  #     - marketplace-network
+      
+  notification-service:
+    build:
+      context: ./backend/notification-service
+    container_name: marketplace-notification-service
+    ports:
+      - "3020:3020"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - marketplace-network
 
 volumes:
   mongodb_data:
