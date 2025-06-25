@@ -71,9 +71,7 @@ contract FundToken is ERC20, Ownable, Pausable, ReentrancyGuard {
     modifier onlyManagerOrOwner() {
         require(msg.sender == fundInfo.manager || msg.sender == owner(), "FundToken: only manager or owner");
         _;
-    }
-
-    constructor(
+    }    constructor(
         string memory name,
         string memory symbol,
         FundInfo memory _fundInfo,

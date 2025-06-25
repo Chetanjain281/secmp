@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokenized Funds Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-coins me-2"></i>
+                TokFunds Marketplace
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-section="dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="funds">Funds</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="trading">Trading</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="portfolio">Portfolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="oracles">Market Data</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav">
+                    <div class="nav-item dropdown" id="userDropdown" style="display: none;">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="userDisplayName">User</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-section="profile">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-light" id="loginBtn" onclick="showLogin()">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Login to Marketplace</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password">
+                            </div>
+                            <button type="button" class="btn btn-primary w-100" onclick="login()">Login</button>
+                            <div class="text-center mt-3">
+                                <small>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></small>
+                            </div>
+                        </div>
+                        <div id="registerForm" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="registerFirstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="registerFirstName" placeholder="First Name">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="registerLastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="registerLastName" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="registerEmail" placeholder="Enter your email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="registerPassword" placeholder="Enter your password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerRole" class="form-label">Role</label>
+                                <select class="form-control" id="registerRole">
+                                    <option value="user">Investor</option>
+                                    <option value="fund_manager">Fund Manager</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-success w-100" onclick="register()">Register</button>
+                            <div class="text-center mt-3">
+                                <small>Already have an account? <a href="#" onclick="showLogin()">Login here</a></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-chart-line me-2"></i>Market Dashboard</h2>
+                </div>
+            </div>
+            
+            <!-- Market Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Total Market Cap</h6>
+                                    <h4 id="totalMarketCap">$0</h4>
+                                </div>
+                                <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">24h Volume</h6>
+                                    <h4 id="totalVolume24h">$0</h4>
+                                </div>
+                                <i class="fas fa-chart-bar fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Active Funds</h6>
+                                    <h4 id="totalFunds">0</h4>
+                                </div>
+                                <i class="fas fa-building fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">INR/USD Rate</h6>
+                                    <h4 id="inrUsdRate">₹0.00</h4>
+                                </div>
+                                <i class="fas fa-exchange-alt fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Data Tables -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-trophy me-2"></i>Top Performers (24h)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="topPerformersTable">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line me-2"></i>Highest Volume</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="highestVolumeTable">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Funds Section -->
+        <div id="fundsSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-building me-2"></i>Available Funds</h2>
+                    <button class="btn btn-primary" onclick="showCreateFund()">
+                        <i class="fas fa-plus me-2"></i>Create Fund
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row" id="fundsContainer">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading funds...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Section -->
+        <div id="tradingSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-exchange-alt me-2"></i>Trading Dashboard</h2>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Place Order</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="orderForm">
+                                <div class="mb-3">
+                                    <label for="orderFund" class="form-label">Fund</label>
+                                    <select class="form-control" id="orderFund" required>
+                                        <option value="">Select a fund...</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="orderType" class="form-label">Order Type</label>
+                                    <select class="form-control" id="orderType" required>
+                                        <option value="buy">Buy</option>
+                                        <option value="sell">Sell</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="orderQuantity" class="form-label">Quantity</label>
+                                    <input type="number" class="form-control" id="orderQuantity" placeholder="Number of tokens" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="priceType" class="form-label">Price Type</label>
+                                    <select class="form-control" id="priceType" required>
+                                        <option value="market">Market Price</option>
+                                        <option value="limit">Limit Price</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="limitPriceContainer" style="display: none;">
+                                    <label for="limitPrice" class="form-label">Limit Price</label>
+                                    <input type="number" class="form-control" id="limitPrice" placeholder="Price per token" step="0.01">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Place Order</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Order History</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="orderHistoryTable">
+                                <div class="text-center py-3">
+                                    <small class="text-muted">No orders found</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio Section -->
+        <div id="portfolioSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-briefcase me-2"></i>My Portfolio</h2>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Portfolio Value</h5>
+                            <h3 class="text-primary" id="portfolioValue">$0.00</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Investments</h5>
+                            <h3 class="text-success" id="totalInvestments">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">P&L (24h)</h5>
+                            <h3 class="text-info" id="portfolioPnL">$0.00</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Holdings</h5>
+                </div>
+                <div class="card-body">
+                    <div id="portfolioHoldings">
+                        <div class="text-center py-3">
+                            <small class="text-muted">No holdings found</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profileSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-user me-2"></i>User Profile</h2>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Personal Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="profileForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="profileFirstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="profileFirstName">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="profileLastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="profileLastName">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="profileEmail" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profilePhone" class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="profilePhone">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileCountry" class="form-label">Country</label>
+                                    <input type="text" class="form-control" id="profileCountry">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Suitability Assessment</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="suitabilityStatus">
+                                <div class="text-center py-3">
+                                    <small class="text-muted">Complete your suitability assessment</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary w-100 mt-3" onclick="showSuitabilityAssessment()">
+                                Start Assessment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Oracles Section -->
+        <div id="oraclesSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-satellite-dish me-2"></i>Real-time Market Data</h2>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-area me-2"></i>NAV Oracle</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="navOracleData">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-exchange-alt me-2"></i>Forex Oracle</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="forexOracleData">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-shield-alt me-2"></i>Custody Oracle</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="custodyOracleData">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line me-2"></i>Market Oracle</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="marketOracleData">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Fund Modal -->
+    <div class="modal fade" id="createFundModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Fund</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createFundForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fundName" class="form-label">Fund Name</label>
+                                <input type="text" class="form-control" id="fundName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="fundType" class="form-label">Fund Type</label>
+                                <select class="form-control" id="fundType" required>
+                                    <option value="real_estate">Real Estate</option>
+                                    <option value="private_equity">Private Equity</option>
+                                    <option value="hedge_fund">Hedge Fund</option>
+                                    <option value="venture_capital">Venture Capital</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fundDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="fundDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="targetSize" class="form-label">Target Size (USD)</label>
+                                <input type="number" class="form-control" id="targetSize" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="minimumInvestment" class="form-label">Minimum Investment</label>
+                                <input type="number" class="form-control" id="minimumInvestment" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="managementFee" class="form-label">Management Fee (%)</label>
+                                <input type="number" class="form-control" id="managementFee" step="0.1" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Fund</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="notificationToast" class="toast" role="alert">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Default message
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

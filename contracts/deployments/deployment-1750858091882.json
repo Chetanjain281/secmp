@@ -1,0 +1,37 @@
+{
+  "network": "localhost",
+  "timestamp": "2025-06-25T13:28:11.870Z",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "blockNumber": 5,
+  "contracts": {
+    "MockUSDC": {
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "name": "Mock USD Coin",
+      "symbol": "MUSDC",
+      "decimals": 6,
+      "totalSupply": "111500000.0 MUSDC"
+    },
+    "FundToken": {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "name": "Comprehensive Alpha Growth Fund",
+      "symbol": "CAGFT",
+      "manager": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+      "fundType": "private_equity",
+      "minimumInvestment": "100000.0 USDC",
+      "initialNAV": "100.0 USD",
+      "totalAssetValue": "100000000.0 USD"
+    }
+  },
+  "testAccounts": {
+    "investor1": {
+      "address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+      "usdcBalance": "1000000.0 USDC",
+      "suitabilityExample": true
+    },
+    "investor2": {
+      "address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      "usdcBalance": "500000.0 USDC",
+      "suitabilityExample": true
+    }
+  }
+}

@@ -1,6 +1,7 @@
 version: '3.8'
 
-services:  # MongoDB Database
+services:
+  # MongoDB Database
   mongodb:
     image: mongo:6.0
     container_name: marketplace-mongodb
@@ -65,7 +66,9 @@ services:  # MongoDB Database
     environment:
       KAFKA_BROKERS: kafka:9092
     networks:
-      - marketplace-network  # Backend Services
+      - marketplace-network
+
+  # Backend Services
   auth-service:
     build:
       context: ./backend/auth-service
@@ -93,6 +96,162 @@ services:  # MongoDB Database
     depends_on:
       - mongodb
       - kafka
+    networks:
+      - marketplace-network
+
+  user-service:
+    build:
+      context: ./backend/user-service
+    container_name: marketplace-user-service
+    ports:
+      - "3012:3012"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - marketplace-network
+
+  fund-service:
+    build:
+      context: ./backend/fund-service
+    container_name: marketplace-fund-service
+    ports:
+      - "3013:3013"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - marketplace-network
+      
+  trading-service:
+    build:
+      context: ./backend/trading-service
+    container_name: marketplace-trading-service
+    ports:
+      - "3014:3014"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - mongodb
+      - kafka
+      - fund-service
+    networks:
+      - marketplace-network
+
+  settlement-service:
+    build:
+      context: ./backend/settlement-service
+    container_name: marketplace-settlement-service
+    ports:
+      - "3015:3015"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+      WEB3_PROVIDER: http://hardhat-node:8545
+    depends_on:
+      - mongodb
+      - kafka
+      - trading-service
+      - hardhat-node
+    networks:
+      - marketplace-network
+
+  blockchain-service:
+    build:
+      context: ./backend/blockchain-service
+    container_name: marketplace-blockchain-service
+    ports:
+      - "3016:3016"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+      WEB3_PROVIDER: http://hardhat-node:8545
+      SETTLEMENT_ADDRESS: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+      SERVICE_WALLET_ADDRESS: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      SERVICE_WALLET_PRIVATE_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+    depends_on:
+      - mongodb
+      - kafka
+      - hardhat-node
+      - settlement-service
+    networks:
+      - marketplace-network
+  nav-oracle:
+    build:
+      context: ./backend/oracles/nav-oracle
+    container_name: marketplace-nav-oracle
+    ports:
+      - "3021:3021"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+      NAV_UPDATE_INTERVAL_SECONDS: 10
+      FUND_SERVICE_URL: http://fund-service:3013
+    depends_on:
+      - mongodb
+      - kafka
+      - fund-service
+    networks:
+      - marketplace-network
+
+  forex-oracle:
+    build:
+      context: ./backend/oracles/forex-oracle
+    container_name: marketplace-forex-oracle
+    ports:
+      - "3022:3022"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+      FOREX_UPDATE_INTERVAL_SECONDS: 30
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - marketplace-network
+
+  custody-oracle:
+    build:
+      context: ./backend/oracles/custody-oracle
+    container_name: marketplace-custody-oracle
+    ports:
+      - "3023:3023"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+      CUSTODY_UPDATE_INTERVAL_MINUTES: 1
+      FUND_SERVICE_URL: http://fund-service:3013
+    depends_on:
+      - mongodb
+      - kafka
+      - fund-service
+    networks:
+      - marketplace-network
+
+  market-oracle:
+    build:
+      context: ./backend/oracles/market-oracle
+    container_name: marketplace-market-oracle
+    ports:
+      - "3024:3024"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/marketplace
+      KAFKA_BROKER: kafka:9092
+      MARKET_UPDATE_INTERVAL_SECONDS: 30
+      TRADING_SERVICE_URL: http://trading-service:3014
+      FUND_SERVICE_URL: http://fund-service:3013
+    depends_on:
+      - mongodb
+      - kafka
+      - fund-service
+      - trading-service
     networks:
       - marketplace-network
 

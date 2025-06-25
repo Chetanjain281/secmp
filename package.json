@@ -2,7 +2,8 @@
   "name": "blockchain-tokenized-funds-marketplace",
   "version": "1.0.0",
   "description": "Blockchain Secondary Marketplace for Tokenized Funds - Complete POC System",
-  "main": "index.js",  "scripts": {
+  "main": "index.js",
+  "scripts": {
     "install:all": "npm run install:contracts; npm run install:services; npm run install:viz",
     "install:contracts": "cd contracts; npm install",
     "install:services": "npm run install:auth; npm run install:user; npm run install:fund; npm run install:custody; npm run install:trading; npm run install:settlement; npm run install:blockchain; npm run install:notification; npm run install:oracles",
@@ -20,7 +21,10 @@
     "dev:stop": "docker-compose down",
     "dev:clean": "docker-compose down -v",
     "test:contracts": "cd contracts; npm test",
-    "test:all": "npm run test:contracts",
+    "test:user": "cd backend/user-service; npm test",
+    "test:fund": "cd backend/fund-service; npm test",
+    "test:trading": "cd backend/trading-service; npm test",
+    "test:all": "npm run test:contracts && npm run test:user && npm run test:fund && npm run test:trading",
     "deploy:contracts": "cd contracts; npm run deploy:local",
     "hardhat:node": "cd contracts; npm run node",
     "logs": "docker-compose logs -f"
@@ -38,5 +42,9 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "express": "^5.1.0"
   }
 }

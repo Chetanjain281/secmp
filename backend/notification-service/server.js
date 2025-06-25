@@ -49,11 +49,42 @@ const NotificationSchema = new mongoose.Schema({
     type: String,
     required: true,
     index: true
-  },
-  type: {
+  },  type: {
     type: String,
     required: true,
-    enum: ['USER_CREATED', 'USER_LOGGED_IN', 'FUND_CREATED', 'INVESTMENT_MADE', 'SYSTEM_ALERT']
+    enum: [
+      'USER_CREATED', 
+      'USER_LOGGED_IN', 
+      'USER_REGISTERED',
+      'PROFILE_UPDATED',
+      'PROFILE_STATUS_UPDATED',
+      'KYB_SUBMITTED',
+      'KYB_APPROVED',
+      'KYB_REJECTED',
+      'SUITABILITY_COMPLETED',
+      'SUITABILITY_UPDATED',
+      'FUND_CREATED', 
+      'FUND_APPROVED',
+      'FUND_REJECTED',
+      'FUND_UPDATED',
+      'NAV_UPDATED',
+      'CUSTODY_VERIFIED',
+      'CUSTODY_REJECTED',
+      'ORDER_PLACED',
+      'ORDER_MATCHED',
+      'ORDER_CANCELLED',
+      'ORDER_COMPLETED',
+      'TRADE_EXECUTED',
+      'TRADE_SETTLED',
+      'PAYMENT_PROCESSED',
+      'PAYMENT_FAILED',
+      'TOKENS_LOCKED',
+      'TOKENS_UNLOCKED',
+      'WAITING_LIST_UPDATED',
+      'INVESTMENT_MADE', 
+      'SYSTEM_ALERT',
+      'NOTIFICATION_SENT'
+    ]
   },
   title: {
     type: String,
